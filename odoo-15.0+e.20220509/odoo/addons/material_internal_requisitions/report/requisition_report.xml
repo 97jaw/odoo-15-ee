@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- <report
+            id="report_internal_requisition"
+            model="internal.requisition"
+            string="Print Requisition"
+            report_type="qweb-pdf"
+            name="material_internal_requisitions.internal_requisition"
+            file="material_internal_requisitions.internal_requisition"
+        /> -->
+
+        <record id="report_internal_requisition" model="ir.actions.report">
+            <field name="name">Print Requisition</field>
+            <field name="model">internal.requisition</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">material_internal_requisitions.internal_requisition</field>
+            <field name="report_file">material_internal_requisitions.internal_requisition</field>
+            <field name="binding_model_id" ref="model_internal_requisition"/>
+            <field name="binding_type">report</field>
+        </record>
+        
+        <template id="internal_requisition">
+           <t t-call="web.html_container">
+               <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.internal_layout">
+                         <div class="page">
+                             <div class="text-center">
+                                 <h2>
+                                    <strong><p>Internal Requisition <span t-field="doc.name"/> - <span t-field="doc.state"/> </p></strong><br/>
+                                 </h2>
+                             </div>
+                             <table class="table table-bordered col-md-12">
+                                <tr>
+                                   <td><strong>Employee</strong></td><td> <span t-field="doc.request_emp"/></td>
+                                   <td><strong>Requisition Date</strong></td><td> <span t-field="doc.request_date"/></td>
+                               </tr>
+                               <tr>
+                                   <td><strong>Department </strong></td><td> <span t-field="doc.department_id.name"/></td>
+                                   <td><strong>Received Date</strong></td><td> <span t-field="doc.receive_date"/></td>
+                               </tr>
+                               <tr>
+                                   <td><strong>Requisition Responsible</strong></td><td> <span t-field="doc.requisiton_responsible_id.name"/></td>
+                                   <td><strong>Requisition Deadline</strong></td><td> <span t-field="doc.date_end"/></td>
+                               </tr>
+                               <tr>
+                                   <td><strong>Company</strong></td><td> <span t-field="doc.company_id.name"/></td>
+                                   <!-- <td></td>
+                                   <td></td> -->
+                                   <td><strong>Analytic Account</strong></td><td> <span t-field="doc.account_id"/></td>
+                                   <!-- <td><strong>Analytic Account</strong></td><td> <span t-field="doc.account_id.name"/></td> -->
+                               </tr>
+                            </table>
+                            <strong><h3>Other Information</h3></strong>
+                            <table class="table table-bordered col-md-12">
+                               <tr>
+                                   <td><strong>Confirmed By</strong></td><td> <span t-field="doc.confirm_id.name"/></td>
+                                   <td><strong>Confirmed Date</strong></td><td> <span t-field="doc.confirm_date"/></td>
+                               </tr>
+                               <tr>
+                                   <td><strong>Department Manager</strong></td><td> <span t-field="doc.approve_manager.name"/></td>
+                                   <td><strong>Department Approval Date</strong></td><td> <span t-field="doc.managerapp_date"/></td>
+                               </tr>
+                               <tr>
+                                   <td><strong>Approved By </strong></td><td> <span t-field="doc.approve_user"/></td>
+                                   <td><strong>Approved Date </strong></td><td> <span t-field="doc.userrapp_date"/></td>
+                               </tr>
+                               <tr>
+                                   <td><strong>Rejected By </strong></td><td> <span t-field="doc.reject_user"/></td>
+                                   <td><strong>Rejected Date</strong></td><td> <span t-field="doc.userreject_date"/></td>
+                               </tr>
+                            </table>
+                            <strong><h3>Picking Details</h3></strong>
+                            <table class="table table-bordered col-md-12">
+                               <tr>
+                                   <td><strong>Source Location</strong></td><td> <span t-field="doc.location.name"/></td>
+                                   <td><strong>Destination Location </strong></td><td> <span t-field="doc.desti_loca_id.name"/></td>
+                               </tr>
+                               <tr>
+                                   <td><strong>Internal Picking</strong></td><td> <span t-field="doc.delivery_picking_id.sudo().name"/></td>
+                                   <td></td><td></td>
+                               </tr>
+                            </table>
+                            <!-- <br></br><br></br><br></br><br></br> -->
+                            <strong><h3>Description</h3></strong>
+                            <table class="table table-bordered col-md-12">
+                               <tr>
+                                   <td><strong>Reason for Requisition</strong></td><td> <span t-field="doc.reason"/></td>
+                               </tr>
+                            </table>
+                            <strong><h3>Requisition Lines</h3></strong>
+                            <table class="table table-bordered col-md-12">
+                               <tr>
+                                    <td><strong>Product</strong></td>
+                                    <td><strong>Description</strong></td>
+                                    <td><strong>Quantity</strong></td>
+                                    <td><strong>Unit of Measure</strong></td>
+                               </tr>
+                               <t t-foreach ="doc.requisition_line_ids" t-as="line">
+                                   <tr>
+                                    <td><span t-field="line.product_id.name"/></td>
+                                    <td><span t-esc="line.description"/></td>
+                                    <td class="text-right"><span t-esc="line.qty"/>
+                                  </td>
+                                    <td class="text-right"><span t-esc="line.uom.name"/></td>
+                               </tr>
+                               </t>
+                         </table>
+                         <div class="row">
+                             <div class="col-6 text-left">
+                                <strong>Employee Signature:____________________</strong>
+                             </div>
+                             <div class="col-xs-6 text-right">
+                                <strong>Date:____________________</strong>
+                             </div>
+                         </div>
+                         <br/>
+                          <div class="row">
+                             <div class="col-6 text-left">
+                                <strong>Manager Signature:____________________</strong>
+                             </div>
+                             <div class="col-xs-6 text-right">
+                                <strong>Date:____________________</strong>
+                             </div>
+                         </div>
+                         <br/>
+                         <div class="row">
+                             <div class="col-6 text-left">
+                                <strong>Approve Signature:____________________</strong>
+                             </div>
+                             <div class="col-xs-6 text-right">
+                                <strong>Date:____________________</strong>
+                             </div>
+                         </div>
+                        </div>
+                    </t>
+               </t>
+             </t>
+        </template>
+        
+  </data>
+</odoo>
